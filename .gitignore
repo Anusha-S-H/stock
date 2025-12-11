@@ -1,0 +1,13 @@
+# node modules
+node_modules/
+fe/node_modules/
+
+# python folders
+__pycache__/
+*.pyc
+
+# environment files
+.env
+*.env
+be/.env
+fe/.env
