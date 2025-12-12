@@ -1,10 +1,17 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, ArrowRight, BarChart3, Shield, Zap } from 'lucide-react';
+import { BarChart3, ArrowRight, Shield, Zap } from 'lucide-react';
 import ParticlesBackground from '@/components/ui/ParticlesBackground';
+import ThemeToggle from '@/components/ui/ThemeToggle';
+import RealTimeModal from '@/components/landing/RealTimeModal';
+import AIPredictionModal from '@/components/landing/AIPredictionModal';
+import RiskAssessmentModal from '@/components/landing/RiskAssessmentModal';
 
 const Index = () => {
   const navigate = useNavigate();
+  const [openRealTime, setOpenRealTime] = useState(false);
+  const [openAIPred, setOpenAIPred] = useState(false);
+  const [openRisk, setOpenRisk] = useState(false);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -19,7 +26,7 @@ const Index = () => {
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center neon-glow-sm">
-              <TrendingUp className="w-6 h-6 text-primary-foreground" />
+              <BarChart3 className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold gradient-text">StockSense</span>
           </div>
@@ -30,6 +37,7 @@ const Index = () => {
             >
               Sign In
             </button>
+            <ThemeToggle />
             <button
               onClick={() => navigate('/signup')}
               className="btn-neon"
@@ -82,21 +90,25 @@ const Index = () => {
               icon: BarChart3,
               title: 'Real-time Analysis',
               description: 'Get instant insights from market data and news sentiment analysis.',
+              action: () => setOpenRealTime(true),
             },
             {
               icon: TrendingUp,
               title: 'AI Predictions',
               description: 'Advanced machine learning models predict stock movements with high accuracy.',
+              action: () => setOpenAIPred(true),
             },
             {
               icon: Shield,
               title: 'Risk Assessment',
               description: 'Understand your portfolio risk with comprehensive scoring and alerts.',
+              action: () => setOpenRisk(true),
             },
           ].map((feature, index) => (
             <div
               key={feature.title}
-              className="glass-card-hover p-6 text-center animate-fade-in-up"
+              onClick={feature.action}
+              className="glass-card-hover p-6 text-center animate-fade-in-up cursor-pointer transition-transform hover:-translate-y-1 hover:shadow-neon"
               style={{ animationDelay: `${0.3 + index * 0.1}s` }}
             >
               <div className="w-14 h-14 rounded-2xl bg-gradient-primary mx-auto mb-4 flex items-center justify-center neon-glow-sm">
@@ -108,6 +120,10 @@ const Index = () => {
           ))}
         </div>
       </main>
+
+      <RealTimeModal open={openRealTime} onClose={() => setOpenRealTime(false)} />
+      <AIPredictionModal open={openAIPred} onClose={() => setOpenAIPred(false)} />
+      <RiskAssessmentModal open={openRisk} onClose={() => setOpenRisk(false)} />
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border/50 py-8">

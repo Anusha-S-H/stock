@@ -8,6 +8,7 @@ import StockChart from '@/components/dashboard/StockChart';
 import StockPerformanceCard from '@/components/dashboard/StockPerformanceCard';
 import WalletScoreCard from '@/components/dashboard/WalletScoreCard';
 import AIStockPicks from '@/components/dashboard/AIStockPicks';
+import QuickGuide from '@/components/dashboard/QuickGuide';
 import { toast } from '@/components/ui/use-toast';
 
 type ApiSentiment = [string, number];
@@ -345,12 +346,17 @@ const Dashboard = () => {
                   data={stockData.history ?? []}
                   title="30-Day Stock Trend"
                   color="hsl(187, 100%, 50%)"
+                  xLabel="Date"
+                  yLabel="Price (Rupees)"
+                  showAxisBreak
                 />
                 <StockChart
                   data={stockData.prediction ?? []}
                   title="AI Price Prediction"
                   color="hsl(270, 80%, 60%)"
                   showPrediction
+                  xLabel="Month"
+                  yLabel="Price (Rupees)"
                 />
               </div>
             </div>
@@ -396,6 +402,9 @@ const Dashboard = () => {
           />
           <AIStockPicks />
         </section>
+
+        {/* Quick Guide for Beginners at bottom */}
+        <QuickGuide />
       </main>
     </div>
   );

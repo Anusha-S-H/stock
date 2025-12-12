@@ -5,9 +5,16 @@ interface StockChartProps {
   title: string;
   color?: string;
   showPrediction?: boolean;
+  xLabel?: string;
+  yLabel?: string;
+  showAxisBreak?: boolean;
 }
 
-const StockChart = ({ data, title, color = 'hsl(187, 100%, 50%)', showPrediction = false }: StockChartProps) => {
+const StockChart = ({ data, title, color = 'hsl(187, 100%, 50%)', showPrediction = false, xLabel, yLabel, showAxisBreak = false }: StockChartProps) => {
+  // Calculate min and max for axis break
+  const prices = data.map(d => d.price);
+  const minPrice = prices.length > 0 ? Math.floor(Math.min(...prices) / 10) * 10 : 0;
+  const maxPrice = prices.length > 0 ? Math.ceil(Math.max(...prices) / 10) * 10 : 100;
   return (
     <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
       <div className="flex items-center justify-between mb-6">
@@ -19,7 +26,7 @@ const StockChart = ({ data, title, color = 'hsl(187, 100%, 50%)', showPrediction
         )}
       </div>
       
-      <div className="h-64">
+      <div className="h-64 relative">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
             <defs>
@@ -34,12 +41,15 @@ const StockChart = ({ data, title, color = 'hsl(187, 100%, 50%)', showPrediction
               stroke="hsl(215, 20%, 65%)"
               fontSize={12}
               tickLine={false}
+              label={xLabel ? { value: xLabel, position: 'insideBottom', offset: -5, fill: 'hsl(215, 20%, 65%)' } : undefined}
             />
             <YAxis 
               stroke="hsl(215, 20%, 65%)"
               fontSize={12}
               tickLine={false}
-              tickFormatter={(value) => `$${value}`}
+              domain={showAxisBreak ? [minPrice, maxPrice] : undefined}
+              tickFormatter={(value) => `₹${value}`}
+              label={yLabel ? { value: yLabel, angle: -90, position: 'insideLeft', fill: 'hsl(215, 20%, 65%)' } : undefined}
             />
             <Tooltip
               contentStyle={{

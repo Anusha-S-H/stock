@@ -95,29 +95,37 @@ def get_stock_history(symbol: str) -> List[Dict[str, object]]:
         return []
 
 def get_stock_prediction(symbol: str) -> List[Dict[str, object]]:
-    """Generate AI price prediction (placeholder with trend extrapolation)."""
+    """Generate AI price prediction with realistic fluctuations using recent volatility."""
     try:
+        import math
+        import random
+
         stock = yf.Ticker(symbol)
         data = stock.history(period="30d")
         if data.empty:
             return []
-        
-        # Simple trend extrapolation: extend the last price with slight variation
+
         last_price = float(data["Close"].iloc[-1])
-        dates = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
-        
-        # Calculate avg daily change
-        prices = data["Close"].values
-        daily_changes = [(prices[i] - prices[i-1]) / prices[i-1] for i in range(1, len(prices))]
-        avg_change = sum(daily_changes) / len(daily_changes) if daily_changes else 0.01
-        
-        prediction = []
-        current_price = last_price
-        for date in dates:
-            current_price = current_price * (1 + avg_change)
-            prediction.append({"date": date, "price": round(current_price, 2)})
-        
-        return prediction
+        prices = data["Close"].astype(float).tolist()
+        # Compute daily returns and volatility
+        returns = [(prices[i] - prices[i-1]) / prices[i-1] for i in range(1, len(prices))]
+        avg_return = sum(returns) / len(returns) if returns else 0.001
+        vol = (sum((r - avg_return) ** 2 for r in returns) / len(returns)) ** 0.5 if returns else 0.01
+
+        # Future points (6 months)
+        future_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+        pred = []
+        price = last_price
+        for m in future_labels:
+            # random shock scaled by volatility - increased multiplier for more variation
+            shock = random.gauss(0, vol * 1.5)
+            drift = avg_return * 0.5
+            price = price * (1 + drift + shock)
+            # prevent negative or unrealistic price
+            price = max(0.01, price)
+            pred.append({"date": m, "price": round(price, 2)})
+
+        return pred
     except Exception as e:
         print(f"Error generating prediction: {e}")
         return []

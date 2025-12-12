@@ -31,3 +31,9 @@ def predict_stock(payload: PredictRequest) -> dict:
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
+
+
+# Compatibility alias for frontend calls expecting /analyze
+@app.post("/analyze")
+def analyze_stock(payload: PredictRequest) -> dict:
+    return predict_stock(payload)
