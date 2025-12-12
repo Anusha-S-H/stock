@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3, ArrowRight, Shield, Zap } from 'lucide-react';
+import { BarChart3, ArrowRight, Shield, Zap, TrendingUp } from 'lucide-react';
 import ParticlesBackground from '@/components/ui/ParticlesBackground';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import RealTimeModal from '@/components/landing/RealTimeModal';
